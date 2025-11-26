@@ -81,7 +81,7 @@ function go(){
   const button = isCommander
     ? `<a href="${rec.url}" download="${rec.name}_Dossier_2025.pdf" class="dl">DOWNLOAD ${rec.name.toUpperCase()} DOSSIER — FREE (14–15 pages)</a><br><br>
        <button onclick="navigator.clipboard.writeText('Command.Green ${rec.name} → https://command.green')" style="background:#0af;padding:12px 20px;">Share Expose</button>`
-    : `<button onclick="alert('Payment coming in final build')">Unlock Full Report — $49</button>`;
+    : `<button class="unlock-btn" onclick="alert('Payment coming in final build')">Unlock Full Report — $49</button>`;
 
   r.innerHTML = `<h3>Preview: ${rec.name}</h3><p>• Incidents, scale, financial flows, complicity chain loaded</p><p style="margin-top:30px;">${button}</p>`;
 }
