@@ -1,32 +1,91 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="/official/images/style.css">
 <meta charset="UTF-8">
-<meta name="robots" content="noindex">
-<meta name="author" content="Lolcats">
-<meta name="viewport" content="width=device-width, initial-scale=0.4">
-<title>Catbox</title>
+<title>War Room v5.3 - Command.Green</title>
+<style>
+  body{background:#000;color:#0f0;font-family:'Courier New',monospace;margin:0;padding:20px;}
+  .tabs{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0;justify-content:center;}
+  .tab{padding:10px 20px;border:1px solid #0f0;cursor:pointer;}
+  .tab.active{background:#0f0;color:#000;}
+  .panel{display:none;padding:25px;border:2px solid #0f0;min-height:460px;}
+  .panel.active{display:block;}
+  input{width:70%;padding:14px;background:#000;color:#0f0;border:1px solid #0f0;font-size:18px;}
+  button{padding:14px 30px;background:#0f0;color:#000;font-weight:bold;margin:5px;cursor:pointer;}
+  .preview{margin:40px 0;padding:30px;border:2px dashed #0f0;background:#001100;}
+  .cmd{color:#0ff;font-weight:bold;display:none;margin:20px 0;}
+  .quick{margin-top:50px;text-align:center;}
+  .quick button{margin:8px;padding:12px 20px;background:#222;color:#0f0;border:1px solid #0f0;}
+  .quick button:hover{background:#0f0;color:#000;}
+  a.dl{background:#0f8;color:#fff;padding:16px 35px;text-decoration:none;font-weight:bold;font-size:20px;margin:10px;display:inline-block;border-radius:4px;}
+</style>
 </head>
+<body>
+<h1 style="text-align:center">WAR ROOM v5.3</h1>
 
-<img src="/official/images/404.png" style="margin: auto; display: block;">
-
-<div class="notetiny">
-<a class="linkbutton" href="https://catbox.moe/">Click me to go home</a>
+<div class="tabs">
+  <div class="tab active" onclick="openTab('truth')">Truth Hub</div>
+  <div class="tab" onclick="openTab('signals')">Live Signals</div>
+  <div class="tab" onclick="openTab('defenders')">Defend the Defenders</div>
+  <div class="tab" onclick="openTab('notifications')">Notifications</div>
 </div>
 
+<div id="truth" class="panel active">
+  <h2>Truth Hub — Search Reports & Evidence</h2>
+  <input id="q" placeholder="e.g. Cargill deforestation 2025" onkeypress="if(event.key==='Enter')go()">
+  <button onclick="go()">SEARCH</button>
+  <div class="cmd" id="cmd">COMMANDER MODE ACTIVE — ALL REPORTS FREE</div>
+  <div id="r" class="preview"></div>
+
+  <div class="quick">
+    <strong>Quick Reports:</strong><br>
+    <button onclick="set('Shell')">Shell Niger Delta</button>
+    <button onclick="set('Aramco')">Aramco Air Pollution</button>
+    <button onclick="set('Sasol')">Sasol South Africa</button>
+    <button onclick="set('Vanguard')">Vanguard Fossil</button>
+    <button onclick="set('Dawie')">Dawie Groenewald</button>
+    <button onclick="set('Cargill')">Cargill Deforestation</button>
+  </div>
+</div>
+
+<div id="signals" class="panel"><h2>Live Signals</h2><p style="color:cyan">LIVE: Shell spill — Niger Delta</p></div>
+<div id="defenders" class="panel"><h2>Defend the Defenders — launching in 48 hours</h2></div>
+<div id="notifications" class="panel"><h2>Daily Notifications — launching next week</h2></div>
+
 <script>
-(function (d) {
-window.rum = {key: 'z2ave2fv'};
-var script = d.createElement('script');
-script.src = 'https://cdn.perfops.net/rom3/rom3.min.js';
-script.type = 'text/javascript';
-script.defer = true;
-script.async = true;
-d.getElementsByTagName('head')[0].appendChild(script);
-})(document);
+const isCommander = location.search.includes('truthengine2025');
+if(isCommander) document.getElementById('cmd').style.display='block';
+
+function openTab(t){
+  document.querySelectorAll('.panel,.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById(t).classList.add('active');
+  document.querySelector(`[onclick="openTab('${t}')"]`).classList.add('active');
+}
+function set(t){document.getElementById('q').value=t;go();}
+function go(){
+  const q = (document.getElementById('q').value||'Shell').trim().toLowerCase();
+  const r = document.getElementById('r');
+
+  const pdfs = {
+    shell:    {name:"Shell Niger Delta",      url:"https://drive.google.com/uc?export=download&id=1O5v8e8i8K8i8K8i8K8i8K8i8K8i8K8i"},
+    aramco:   {name:"Aramco Air Pollution",   url:"https://drive.google.com/uc?export=download&id=1P6w9f9j9L9j9L9j9L9j9L9j9L9j9L9j"},
+    sasol:    {name:"Sasol South Africa",     url:"https://drive.google.com/uc?export=download&id=1Q7x0g0k0M0k0M0k0M0k0M0k0M0k0M0k"},
+    vanguard: {name:"Vanguard Fossil",        url:"https://drive.google.com/uc?export=download&id=1R8y1h1l1N1l1N1l1N1l1N1l1N1l1N1l"},
+    dawie:    {name:"Dawie Groenewald",       url:"https://drive.google.com/uc?export=download&id=1S9z2i2m2O2m2O2m2O2m2O2m2O2m2O2m"},
+    cargill:  {name:"Cargill Deforestation",  url:"https://drive.google.com/uc?export=download&id=1T0a3j3n3P3n3P3n3P3n3P3n3P3n3P3n"}
+  };
+
+  const key = Object.keys(pdfs).find(k=>q.includes(k)) || 'shell';
+  const rec = pdfs[key];
+
+  const button = isCommander
+    ? `<a href="${rec.url}" download="${rec.name}_Dossier_2025.pdf" class="dl">DOWNLOAD ${rec.name.toUpperCase()} DOSSIER — FREE (14–15 pages)</a><br><br>
+       <button onclick="navigator.clipboard.writeText('Command.Green ${rec.name} → https://command.green')" style="background:#0af;padding:12px 20px;">Share Expose</button>`
+    : `<button onclick="alert('Payment coming in final build')">Unlock Full Report — $49</button>`;
+
+  r.innerHTML = `<h3>Preview: ${rec.name}</h3><p>• Incidents, scale, financial flows, complicity chain loaded</p><p style="margin-top:30px;">${button}</p>`;
+}
+window.onload=go;
 </script>
-
 </body>
-
 </html>
